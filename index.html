@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>GeoQuiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'>
+
+      <link rel="stylesheet" href="css/style.css">
+
+  <style>
+  
+  @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+body {
+  padding-top: 1.5em;
+  font-family: 'Open Sans', sans-serif;
+}
+.quiz {
+  margin-top: 1em;
+  min-height: 60vh;
+  background: #fff;
+  box-shadow: -2px 0px 21px -2px rgba(0, 0, 0, 0.4);
+}
+.text-center {
+  text-align: center;
+}
+.quiz .question img {
+  display: block;
+  margin: 0 auto;
+}
+.quiz button {
+  margin-top: 2em;
+  user-select: none;
+  outline: 0!important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+.quiz .btn {
+  font-size: 1.6rem;
+  height: 3.2em;
+  transition: all .25s ease;
+}
+.quiz .btn-primary,
+.quiz .btn-success {
+  opacity: 0.9;
+  background: #4c9cff;
+  border-radius: 0;
+  border: 0;
+  padding: 0.5em 1em;
+  text-align: center;
+  color: #fff;
+}
+.quiz .btn-primary:hover {
+  opacity: 1;
+  background: #4c9cff;
+  color: #fff;
+}
+.quiz .btn-success {
+  background: #51a351;
+}
+.quiz .btn-success:hover,
+.quiz .btn-success:active {
+  background: #4a9e4a;
+}
+.quiz .btn-primary:disabled,
+.quiz .btn-primary:disabled:hover {
+  background: #ccc;
+}
+.quiz .content {
+  color: #222;
+  padding: .25em 3em 2em 3em;
+  margin-bottom: 1em;
+}
+.quiz .intro {
+  margin-top: 2em;
+}
+.quiz .intro p {
+  font-size: 2rem;
+}
+.quiz aside {
+  color: #777;
+  font-size: 1.5rem;
+  padding-top: 0.25em;
+}
+.quiz .question {
+  margin-top: 2em;
+  position: relative;
+}
+.quiz .question img {
+  box-shadow: -2px 0px 21px -2px rgba(0, 0, 0, 0.4);
+}
+.quiz .question p,
+.quiz .intro p {
+  font-size: 1.8rem;
+  line-height: 1.5;
+  margin: 1em 0;
+}
+.quiz .intro p:last-of-type {
+  padding-bottom: 0;
+}
+.quiz .question-content {
+  min-height: 50px;
+}
+.quiz .question-options {
+  margin-left: 1.5rem;
+}
+.quiz .feedback {
+  padding-bottom: .75em;
+  margin: -0.5em 1em 0 2em;
+  animation: 0.75s roll-in ease;
+}
+.quiz .progress {
+  position: relative;
+  margin-bottom: 0;
+  background: #b5b5b5;
+  border-radius: 0;
+  width: 100%;
+}
+.quiz .progress-bar {
+  background: #4c9cff;
+  height: 100%;
+  transition: width .4s ease;
+}
+.quiz .progress .counter {
+  position: absolute;
+  right: 5px;
+  top: 0;
+  font-weight: normal;
+  color: #fff;
+}
+.quiz .get-my-results {
+  font-size: 2.4rem;
+  margin-bottom: 1em;
+}
+.quiz button .fa {
+  margin-right: .5em;
+}
+.quiz .start-over {
+  margin-top: 20%;
+}
+.quiz .results {
+  padding: 3em;
+  margin-top: 2em;
+  color: #fff;
+  background: #2b9eda;
+}
+.quiz .results h1 {
+  font-size: 2.8rem;
+  text-shadow: 1px 2px 1px rgba(0, 0, 0, 0.1);
+}
+.quiz .results h2 {
+  font-size: 2.4rem;
+  text-shadow: 1px 2px 1px rgba(0, 0, 0, 0.1);
+}
+.quiz .dim {
+  opacity: 0.5;
+}
+.quiz .dim [type="radio"]:checked + label,
+.quiz .dim [type="radio"]:not(:checked) + label {
+  cursor: initial;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.loader,
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  content: '';
+}
+.loader:before {
+  width: 5.2em;
+  height: 10.2em;
+  background: #0dc5c1;
+  border-radius: 10.2em 0 0 10.2em;
+  top: -0.1em;
+  left: -0.1em;
+  -webkit-transform-origin: 5.2em 5.1em;
+  transform-origin: 5.2em 5.1em;
+  -webkit-animation: load2 2s infinite ease 1.5s;
+  animation: load2 2s infinite ease 1.5s;
+}
+.loader {
+  font-size: 11px;
+  text-indent: -99999em;
+  margin: 55px auto;
+  margin-top: 15em;
+  position: relative;
+  width: 10em;
+  height: 10em;
+  box-shadow: inset 0 0 0 1em #ffffff;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.loader:after {
+  width: 5.2em;
+  height: 10.2em;
+  background: #0dc5c1;
+  border-radius: 0 10.2em 10.2em 0;
+  top: -0.1em;
+  left: 5.1em;
+  -webkit-transform-origin: 0px 5.1em;
+  transform-origin: 0px 5.1em;
+  -webkit-animation: load2 2s infinite ease;
+  animation: load2 2s infinite ease;
+}
+.quiz .loading {
+  margin-top: 10em;
+}
+
+.quiz .option {
+  margin-bottom: .75em;
+  transition: all .25s ease;
+}
+.quiz [type="radio"]:checked,
+.quiz [type="radio"]:not(:checked) {
+  position: absolute;
+  left: -9999px;
+}
+.quiz [type="radio"]:checked + label,
+.quiz [type="radio"]:not(:checked) + label {
+  position: relative;
+  font-weight: normal;
+  padding-left: 28px;
+  cursor: pointer;
+  line-height: 20px;
+  display: inline-block;
+  color: #666;
+}
+.quiz [type="radio"]:checked + label:before,
+.quiz [type="radio"]:not(:checked) + label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ddd;
+  border-radius: 100%;
+  background: #fff;
+}
+.quiz .correct [type="radio"] + label::before,
+.quiz .wrong [type="radio"] + label::before {
+  border: 0;
+  font-size: 1.2rem;
+  animation: 0.25s roll-in ease;
+}
+.quiz .correct [type="radio"] + label::after,
+.quiz .wrong [type="radio"] + label::after {
+  display: none;
+}
+.quiz .correct [type="radio"] + label:before {
+  content: '\f00C';
+  font-family: "FontAwesome" !important;
+  color: #09b39c;
+}
+.quiz .wrong [type="radio"] + label:before {
+  content: '\f00d';
+  font-family: "FontAwesome" !important;
+  color: #b05747;
+}
+.quiz [type="radio"]:checked + label:after,
+.quiz [type="radio"]:not(:checked) + label:after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: #ea7373;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  border-radius: 100%;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+.quiz [type="radio"]:not(:checked) + label:after {
+  opacity: 0;
+  -webkit-transform: scale(0);
+  transform: scale(0);
+}
+.quiz [type="radio"]:checked + label:after {
+  opacity: 1;
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+@keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes pulse {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(1.05, 1.05, 1.05);
+    transform: scale3d(1.05, 1.05, 1.05);
+  }
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.pulse {
+  -webkit-animation-name: pulse;
+  animation: pulse 1s infinite;
+}
+.fade-in {
+  animation: fade .75s ease;
+}
+.question-animate {
+  animation: fade .7s ease;
+}
+.loader,
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  content: '';
+}
+.loader:before {
+  width: 5.2em;
+  height: 10.2em;
+  background: #0dc5c1;
+  border-radius: 10.2em 0 0 10.2em;
+  top: -0.1em;
+  left: -0.1em;
+  -webkit-transform-origin: 5.2em 5.1em;
+  transform-origin: 5.2em 5.1em;
+  -webkit-animation: load2 2s infinite ease 1.5s;
+  animation: load2 2s infinite ease 1.5s;
+}
+.loader {
+  font-size: 11px;
+  text-indent: -99999em;
+  margin: 55px auto;
+  position: relative;
+  width: 10em;
+  height: 10em;
+  box-shadow: inset 0 0 0 1em #ffffff;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.loader:after {
+  width: 5.2em;
+  height: 10.2em;
+  background: #0dc5c1;
+  border-radius: 0 10.2em 10.2em 0;
+  top: -0.1em;
+  left: 5.1em;
+  -webkit-transform-origin: 0px 5.1em;
+  transform-origin: 0px 5.1em;
+  -webkit-animation: load2 2s infinite ease;
+  animation: load2 2s infinite ease;
+}
+@keyframes load2 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes roll-in {
+  0% {
+    top: 10px;
+    opacity: 0;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+  
+  </style>
+  </head>
+
+<body>
+
+  <html>
+  
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Geography Quiz</title>
+</head>
+
+<body class="container">
+  <section ng-app="ngQuiz" ng-controller="ngQuizController" class="quiz">
+    <image-preload></image-preload>
+    <div class="progress" ng-if="quizProgress.inProgress && quizProgress.currentQuestion <= quizProgress.lastQuestion">
+      <span ng-cloak class="counter">Pitanje {{quizProgress.currentQuestionFriendly}} od {{quizProgress.lastQuestion}}</span>
+      <div class="progress-bar" progress-bar></div>
+    </div>
+    <div class="content">
+    
+      <section ng-cloak class="intro fade-in" ng-if="!quizProgress.loading && !quizProgress.inProgress && !quizProgress.finished">
+        <div ng-cloak class="row">
+          <div class="col-xs-6">
+            <h1>{{::quizMetadata.title}}</h1>
+            <p>{{::quizMetadata.intro}}</p>
+          </div>
+          <div class="col-xs-6">
+            <img ng-src="{{quizMetadata.introImg}}" />
+            <aside class="figure-caption text-xs-right" ng-if="quizMetadata.introImgCredit">Photo credit: {{::quizMetadata.introImgCredit}}</aside>
+          </div>
+        </div>
+        <div class="row">
+          <button class="pull-right btn btn-success" ng-click="startQuiz()">Start</button>
+        </div>
+      </section>
+
+     
+      <section ng-cloak class="fade-in question" ng-if="quizProgress.inProgress && quizProgress.currentQuestion <= quizProgress.lastQuestion">
+        <div animate-progression>
+          <div class="text-center">
+            <img class="img-responsive" ng-src="{{quizQuestions[quizProgress.currentQuestion].questionImg}}" />
+          </div>
+
+          <p class="question-content">{{quizQuestions[quizProgress.currentQuestion].question}}</p>
+          <div class="question-options">
+            <div ng-repeat="option in quizQuestions[quizProgress.currentQuestion].options | orderBy: '-'">
+              <div class="option" ng-class="{'wrong': quizQuestions[quizProgress.currentQuestion].answerChecked && option.selected && !option.correct, 'correct': option.correct && quizQuestions[quizProgress.currentQuestion].answerChecked, 'dim': quizQuestions[quizProgress.currentQuestion].answerChecked}">
+                <input type="radio" name="option" id="{{$index}}" ng-click="answerQuestion({selected: option.name})" ng-disabled="quizQuestions[quizProgress.currentQuestion].answerChecked">
+                <label for="{{$index}}">{{option.name}}</label>
+              </div>
+              <div class="row feedback" ng-if="quizQuestions[quizProgress.currentQuestion].answerChecked && option.correct">
+                <span ng-bind-html="quizQuestions[quizProgress.currentQuestion].feedback"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <button ng-if="quizProgress.currentQuestion === -1" class="btn btn-primary" ng-click="startQuiz()">Start Quiz</button>
+            <button ng-if="quizQuestions[quizProgress.currentQuestion].answerChecked && quizProgress.currentQuestionFriendly !== quizProgress.lastQuestion" class="btn btn-primary pull-right" ng-click="nextQuestion()">Slijedeče pitanje <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+            <button ng-if="!quizQuestions[quizProgress.currentQuestion].answerChecked" ng-disabled="!quizQuestions[quizProgress.currentQuestion].answered" class="btn btn-primary pull-right" ng-click="checkAnswer()">Provjeri odgovor</button>
+          </div>
+        </div>
+
+        <div class="get-my-results text-center" ng-if="quizProgress.currentQuestionFriendly === quizProgress.lastQuestion && quizQuestions[quizProgress.currentQuestion].answerChecked">
+          <button class="pulse btn btn-primary" ng-click="getScore()">Prikaži rezultat</button>
+        </div>
+      </section>
+
+      <section class="loading" ng-if="quizProgress.loading || quizProgress.calculatingScore">
+        <div class="loader"></div>
+      </section>
+
+      <section class="fade-in" ng-if="!quizProgress.calculatingScore && !quizProgress.inProgress && quizProgress.currentQuestionFriendly === quizProgress.lastQuestion">
+        <div class="results">
+          <div class="text-center">
+            <h1>Rezultat</h1>
+            <h2>{{score}}</h2>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button class="start-over btn btn-success" ng-click="startOver()"><i class="fa fa-repeat" aria-hidden="true"></i>Pokušaj ponovo</button>
+        </div>
+      </section>
+  </section>
+
+</body>
+  
+</html>
+
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-sanitize.min.js'></script>
+
+    <script src="js/index.js"></script>
+	
+	<script>
+angular.module('ngQuiz', ['ngSanitize'])
+
+.controller('ngQuizController', function($scope, $timeout, quizProgress, scoreKeeper) {
+  $scope.quizProgress = quizProgress;
+
+  $scope.quizData = {
+    "quizMetadata": {
+      "title": "GeoQuiz",
+      "intro": "Zaigraj i pokaži koliko znaš!",
+      "introImg": "https://openclipart.org/download/1733/molumen-world-map-1.svg",
+    },
+    "quizQuestions": [{
+      "question": "Koja je ovo zemlja?",
+      "questionImg": "http://steve-lovelace.com/wordpress/wp-content/uploads/2013/06/49-star-american-flag.png",
+      "feedback": "Sjedinjene Američke Države, također se često koristi kratica SAD ili engleski USA (United States of America), savezna je republika u središnjoj Sjevernoj Americi, koja se prostire od Atlantika na istoku do Tihog oceana na zapadu.",
+      "options": [{
+        "name": "Australija",
+        "correct": false
+      }, {
+        "name": "Sjedinjene Američke Države",
+        "correct": true
+      }, {
+        "name": "Mikronezija",
+        "correct": false
+      }]
+    }, {
+      "question": "Ova zastava pripada kojoj zemlji?",
+      "questionImg": "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
+      "feedback": "Brazil je najveća je država u Južnoj Americi. Prema površini i broju stanovnika od preko 190 milijuna, peta je najveća zemlja na svijetu.",
+      "options": [{
+        "name": "Kina",
+        "correct": false
+      }, {
+        "name": "Saudijska Arabija",
+        "correct": false
+      }, {
+        "name": "Brazil",
+        "correct": true
+      }]
+    }, {
+      "question": "Koja je ovo europska zemlja?",
+      "questionImg": "http://img3.wikia.nocookie.net/__cb20120613165839/althistory/images/e/e4/Map_of_New_Germany.png",
+      "feedback": "Njemačka je jedna od najrazvijenijih država svijeta i jedna od osnivačkih članica Europske Unije. S približno 82 milijuna stanovnika, druga je europska zemlja po broju stanovnika, a najveća u EU-u, te ima najsnažnije europsko gospodarstvo. Nakon SAD-a, Njemačka je druga najpopularnija migracijska destinacija u svijetu.",
+      "options": [{
+        "name": "Njemačka",
+        "correct": true
+      }, {
+        "name": "Francuska",
+        "correct": false
+      }, {
+        "name": "Belgija",
+        "correct": false
+      }]
+    }, {
+      "question": "Najviša planina Bosne I Hercegovine?",
+      "questionImg": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Maglic.jpg",
+      "feedback": "Maglić je dinarska planina u BiH, na državnoj granici s Crnom Gorom s najvišim vrhom u Bosni i Hercegovini od 2386 metara.",
+      "options": [{
+        "name": "Vlašić",
+        "correct": false
+      }, {
+        "name": "Maglić",
+        "correct": true
+      }, {
+        "name": "Jahorina",
+        "correct": false
+      }]
+    }, {
+      "question": "Glavni grad Poljske?",
+      "questionImg": "http://www.wish.hr/wp-content/uploads/2012/06/varsava-21.jpg",
+      "feedback": "Varšava je važan znanstveni, kulturni i politički centar. U Varšavi se nalaze parlament, predsjednička palača i poljska vlada te je ujedno i največi grad u Poljskoj.",
+      "options": [{
+        "name": "Varšava",
+        "correct": true
+      }, {
+        "name": "Krakov",
+        "correct": false
+      }, {
+        "name": "Poznanj",
+        "correct": false
+      }]
+    }, {
+      "question": "Najduža rijeka u Europi?",
+      "questionImg": "http://i32.tinypic.com/op4p77.jpg",
+      "feedback": "Volga je sa svojih 3.534 km najduža rijeka u Europi. U starom vijeku je bila poznata pod imenom Atil odnosno stari Grci su je poznavali pod imenom Rha. Čitav tok rijeke nalazi se na području Rusije.",
+      "options": [{
+        "name": "Volga",
+        "correct": true
+      }, {
+        "name": "Dunav",
+        "correct": false
+      }, {
+        "name": "Po",
+        "correct": false
+      }]
+    }, {
+      "question": "Koliko zemalja ima u Europi?",
+      "questionImg": "https://upload.wikimedia.org/wikipedia/commons/9/94/BlankMap-Europe-v5.png",
+      "feedback": "Europa je sastavljenu od 42 teritorijano cjelovite države i europskih dijelova Ruske Federacije i Turske. S obzirom na površinu koje je otprilike 10,2 milijuna km2, Europa je među najmanjim kontinentima.",
+      "options": [{
+        "name": "48",
+        "correct": false
+      }, {
+        "name": "42",
+        "correct": true
+      }, {
+        "name": "52",
+        "correct": false
+      }]
+    }, {
+      "question": "Ovo je zastava koje države?",
+      "questionImg": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Norway.svg/1920px-Flag_of_Norway.svg.png",
+      "feedback": "Norveška je država Nordijske regije Sjeverne Europe koja obuhvaća zapadni dio Skandinavskog poluotoka, kao i otok Jan Mayen te arktičko otočje Svalbard. Ovu zemlju površine 385 252 kvadratna kilometra nastanjuje oko 4,9 milijuna stanovnika.",
+      "options": [{
+        "name": "Finska",
+        "correct": false
+      }, {
+        "name": "Danska",
+        "correct": false
+      }, {
+        "name": "Norveška",
+        "correct": true
+      }]
+    }, {
+      "question": "Na afričkom kontinentu ima koliko zemalja?",
+      "questionImg": "http://www.halal-reisen.de/wp-content/uploads/2016/02/afrika.png",
+      "feedback": "Afrika je drugi svjetski kontinent po veličini i broju stanovnika, nakon Azije. S površinom od oko 30,244.050 km2 uključujući otočja, pokriva 6 % ukupne Zemljine površine i pokriva 20,4 % ukupnog kopnenog područja na Zemlji.",
+      "options": [{
+        "name": "46",
+        "correct": true
+      }, {
+        "name": "56",
+        "correct": false
+      }, {
+        "name": "66",
+        "correct": false
+      }]
+    }, {
+      "question": "Koja je dužina rijeke Neretve?",
+      "questionImg": "http://www.nkp.ba/wp-content/uploads/2013/08/neretva.jpg",
+      "feedback": "Izvire na nadmorskoj visini od 1.095 metara ispod planina Zelengore i Lebršnik u BiH i kroz tu zemlju protječe u dužini od 205 km, a posljednjih 20 km teče kroz Hrvatsku.",
+      "options": [{
+        "name": "320 Km",
+        "correct": false
+      }, {
+        "name": "205 Km",
+        "correct": true
+      }, {
+        "name": "412 Km",
+        "correct": false
+      }]
+    }]
+  };
+
+  $scope.quizQuestions = $scope.quizData.quizQuestions;
+  $scope.quizMetadata = $scope.quizData.quizMetadata;
+  quizProgress.lastQuestion = $scope.quizQuestions.length;
+  quizProgress.loading = false;
+
+  $scope.startQuiz = function() {
+    quizProgress.inProgress = true;
+    quizProgress.currentQuestion = 0;
+    quizProgress.imageToPreload = 1;
+  };
+
+  $scope.nextQuestion = function() {
+    if (quizProgress.currentQuestion < quizProgress.lastQuestion) {
+      quizProgress.currentQuestion = quizProgress.currentQuestion + 1;
+      quizProgress.currentQuestionFriendly = quizProgress.currentQuestionFriendly + 1;
+      quizProgress.imageToPreload = quizProgress.imageToPreload + 1;
+    }
+  };
+
+  $scope.answerQuestion = function(data) {
+    $scope.quizQuestions[quizProgress.currentQuestion].answered = true;
+    angular.forEach($scope.quizQuestions[quizProgress.currentQuestion].options, function(obj) {
+      if (obj.name === data.selected) {
+        obj.selected = true;
+      } else {
+        obj.selected = false;
+      }
+    });
+  };
+
+  $scope.checkAnswer = function() {
+    $scope.quizQuestions[quizProgress.currentQuestion].answerChecked = true;
+
+    angular.forEach($scope.quizQuestions[quizProgress.currentQuestion].options, function(obj) {
+      if (obj.selected) {
+        if (obj.correct) {
+          $scope.quizQuestions[quizProgress.currentQuestion].answerWasRight = true;
+        } else {
+          $scope.quizQuestions[quizProgress.currentQuestion].answerWasRight = false;
+        }
+      }
+    });
+  };
+
+  $scope.getScore = function() {
+    quizProgress.inProgress = false;
+    quizProgress.finished = true;
+    quizProgress.calculatingScore = true;
+    $scope.score = scoreKeeper.calculateScore($scope.quizQuestions);
+
+    $timeout(function() {
+      quizProgress.calculatingScore = false;
+    }, 1500);
+  };
+
+  $scope.startOver = function() {
+    angular.forEach($scope.quizQuestions, function(obj) {
+      obj.answered = false;
+      obj.answerWasRight = false;
+      obj.answerChecked = false;
+
+      angular.forEach(obj.options, function(option) {
+        option.selected = false;
+      });
+    });
+
+    quizProgress.inProgress = true;
+    quizProgress.finished = false;
+    quizProgress.currentQuestion = 0;
+    quizProgress.currentQuestionFriendly = 1;
+  };
+})
+
+.factory('quizProgress', function() {
+  return {
+    currentQuestion: 0,
+    imageToPreload: 0,
+    currentQuestionFriendly: 1,
+    lastQuestion: 0,
+    loading: true,
+    inProgress: false,
+    finished: false,
+    calculatingScore: false
+  };
+})
+
+.service('scoreKeeper', function() {
+  this.calculateScore = function(quizQuestions) {
+    var rightAnswers = 0;
+    angular.forEach(quizQuestions, function(obj) {
+      if (obj.answerWasRight) {
+        rightAnswers += 1;
+      }
+    });
+
+    return ((rightAnswers / quizQuestions.length) * 100).toFixed() + '%';
+  };
+})
+
+.directive('progressBar', function(quizProgress) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      scope.$watch('quizProgress', function(newVal, oldVal) {
+        if (newVal) {
+          element.css('width', ((quizProgress.currentQuestionFriendly / quizProgress.lastQuestion) * 100 + '%'));
+        }
+      }, true);
+    }
+  };
+})
+
+.directive('imagePreload', function(quizProgress) {
+  return {
+    restrict: 'EA',
+    template: "<img style='display:none;' ng-src='{{quizQuestions[quizProgress.imageToPreload].questionImg}}'/>"
+  };
+})
+
+.directive('animateProgression', function(quizProgress, $timeout) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      scope.$watch('quizProgress.currentQuestion', function(newVal, oldVal) {
+        if (newVal) {
+          element.addClass('question-animate');
+          $timeout(function() {
+            element.removeClass('question-animate');
+          }, 1500);
+        }
+      });
+    }
+  };
+});
+</script>
+
+</body>
+</html>
